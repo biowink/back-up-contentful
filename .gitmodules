@@ -1,0 +1,3 @@
+[submodule "contentful-backup"]
+	path = contentful-backup
+	url = https://github.com/iiroj/contentful-backup.git
