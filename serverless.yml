@@ -31,7 +31,7 @@ functions:
   runBackup:
     handler: handler.runBackup
     events:
-      - schedule: rate(1 hour)
+      - schedule: cron(0 8-20 ? * MON-FRI *)
     timeout: 300
 
 resources:

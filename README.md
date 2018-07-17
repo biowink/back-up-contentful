@@ -4,6 +4,8 @@ This repo contains an AWS Lambda function for backing up Contentful content and 
 
 Much of the backup code in this function was based on (or uses) the [contentful-backup repo](https://github.com/iiroj/contentful-backup).
 
+The function is configured to run every hour between 08:00-20:00 on weekdays (Monday-Friday). This ensures that backups are running during the times that Contentful data is most likely to be changed.
+
 ## Prerequisites
 
 ### Environment variables
