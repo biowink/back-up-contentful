@@ -40,3 +40,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: contentfulbackups
+        LifecycleConfiguration:
+          Rules:
+            - ExpirationInDays: 30
+              Status: Enabled
