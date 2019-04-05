@@ -40,13 +40,17 @@ module.exports.runBackup = async (event, context, callback) => {
 
   for (const spaceId of spaceIds) {
     console.log(`Exporting space ${spaceId}...`)
-    await contentfulExport({
-      spaceId,
-      managementToken,
-      exportDir,
-      includeDrafts: true,
-      downloadAssets: true,
-    })
+    try {
+      await contentfulExport({
+        spaceId,
+        managementToken,
+        exportDir,
+        includeDrafts: true,
+        downloadAssets: true,
+      })
+    } catch (e) {
+      postToSlack('The Contentful backup failed while exporting from Contentful. ' + e.message)
+    }
     console.log(`Exported space ${spaceId}`)
   }
 
@@ -63,6 +67,6 @@ module.exports.runBackup = async (event, context, callback) => {
   console.log('Finished uploading files to S3.')
 
   console.log('Posting notification to Slack webhook...')
-  await postToSlack()
+  await postToSlack(`A new Contentful backup was saved to <https://console.aws.amazon.com/s3/buckets/${process.env.AWS_S3_BUCKET_NAME}|S3>.`)
   console.log('Finished posting notification to Slack webhook.')
 }
