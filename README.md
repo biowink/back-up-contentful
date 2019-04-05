@@ -16,10 +16,6 @@ The function is configured to run every hour between 08:00-20:00 on weekdays (Mo
 - `EXPORT_DIR`: The directory to use for the Contentful export. Note that, since this is running in AWS Lambda, the directory must be located under `/tmp`. (Default: `/tmp/contentful-export`.)
 - `SLACK_WEBHOOK_URL`: A URL for a Slack webhook, using the [Incoming WebHooks Slack app](https://clue.slack.com/apps/A0F7XDUAZ-incoming-webhooks). When you create a new webhook for Contentful backups, set this environment variable so that the lambda function will post its results to Slack.
 
-### Serverless CLI
-
-This repo uses the Serverless CLI to deploy. Install it globally with `npm install --global serverless`.
-
 ## Usage
 
 Deploy the function via Serverless with `yarn deploy`. Serverless will provision all necessary S3 resources, and schedule the function to run hourly.
