@@ -17,7 +17,3 @@ Environment variables for the app are gotten from a k8s secret in the `web` name
 - `CONTENTFUL_SPACE_IDS`: A comma-separated list of Contentful space IDs to back up.
 - `EXPORT_DIR`: The directory to use for the Contentful export. Note that, since this is running in AWS Lambda, the directory must be located under `/tmp`. (Default: `/tmp/contentful-export`.)
 - `SLACK_WEBHOOK_URL`: A URL for a Slack webhook, using the [Incoming WebHooks Slack app](https://clue.slack.com/apps/A0F7XDUAZ-incoming-webhooks). When you create a new webhook for Contentful backups, set this environment variable so that the lambda function will post its results to Slack.
-
-## Usage
-
-Deploy the app via the `yarn deploy:docker` command.
