@@ -10,9 +10,9 @@ The app is configured to run every hour between 08:00-20:00 on weekdays (Monday-
 
 ### Environment variables
 
-Environment variables for the app are gotten from a k8s secret in the `web` namespace. To run the app locally, you'd need to create a `.env` file and pass it the following variables.
+Environment variables for the production app are gotten from a k8s secret in the `web` namespace. To run the app locally, you'd need to create a `.env` file and pass it the following variables.
 
-- `AWS_ACCESS_KEY_ID`: The access key ID for an AWS user. This is for authenticating with the S3 bucket.
+- `AWS_S3_BUCKET_NAME`: The S3 bucket for storing Contentful backups.
 - `CONTENTFUL_MANAGEMENT_TOKEN`: The Contentful management token, used for authenticating to the [Content Management API](https://www.contentful.com/developers/docs/references/content-management-api/). Unlike the Content Delivery API, this API allows full exports of Contentful data and assets.
 - `CONTENTFUL_SPACE_IDS`: A comma-separated list of Contentful space IDs to back up.
 - `EXPORT_DIR`: The directory to use for the Contentful export. Note that, since this is running in AWS Lambda, the directory must be located under `/tmp`. (Default: `/tmp/contentful-export`.)

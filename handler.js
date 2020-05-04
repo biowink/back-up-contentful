@@ -39,7 +39,7 @@ const createExportDir = async () => {
   }
 };
 
-const runBackup = async (event, context, callback) => {
+const runBackup = async () => {
   console.log("Creating export directory...");
   const exportDir = await createExportDir();
   console.log(`Created export directory ${exportDir}.`);
