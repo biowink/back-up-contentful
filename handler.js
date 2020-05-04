@@ -17,12 +17,11 @@ if (!managementToken) {
   throw new Error("Missing env variable CONTENTFUL_MANAGEMENT_TOKEN: string");
 }
 
-// Get array of Contentful Space IDs to backup
-var spaceIds = process.env.CONTENTFUL_SPACE_IDS;
-if (!spaceIds) {
-  throw new Error("Missing env variable CONTENTFUL_SPACE_IDS: string[]");
+// Get Contentful Space ID to backup
+var spaceId = process.env.CONTENTFUL_SPACE_IDS;
+if (!spaceId) {
+  throw new Error("Missing env variable CONTENTFUL_SPACE_IDS: string");
 }
-spaceIds = spaceIds.split(",");
 
 const createExportDir = async () => {
   const exportDir = path.resolve(
@@ -44,25 +43,23 @@ const runBackup = async () => {
   const exportDir = await createExportDir();
   console.log(`Created export directory ${exportDir}.`);
 
-  for (const spaceId of spaceIds) {
-    console.log(`Exporting space ${spaceId}...`);
-    try {
-      await contentfulExport({
-        spaceId,
-        managementToken,
-        exportDir,
-        includeDrafts: true,
-        downloadAssets: true,
-        maxAllowedLimit: 10,
-      });
-    } catch (e) {
-      postToSlack(
-        "The Contentful backup failed while exporting from Contentful. " +
-          e.message
-      );
-    }
-    console.log(`Exported space ${spaceId}`);
+  console.log(`Exporting space ${spaceId}...`);
+  try {
+    await contentfulExport({
+      spaceId,
+      managementToken,
+      exportDir,
+      includeDrafts: true,
+      downloadAssets: true,
+      maxAllowedLimit: 10,
+    });
+  } catch (e) {
+    postToSlack(
+      "The Contentful backup failed while exporting from Contentful. " +
+        e.message
+    );
   }
+  console.log(`Exported space ${spaceId}`);
 
   console.log("Initializing S3 client...");
   const s3Client = s3.createClient({

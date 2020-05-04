@@ -1,11 +1,12 @@
 {
   "name": "back-up-contentful",
-  "description": "An Node.js app for backing up Contentful content and assets to S3.",
+  "description": "A Node.js app for backing up Contentful content and assets to S3.",
   "license": "UNLICENSED",
   "scripts": {
     "start": "node handler.js",
     "build:docker": "docker build . -t biowink/contentful-backup -f docker/app.Dockerfile",
-    "start:docker": "docker run -t -i -p 80:80 --rm --name contentful-backup biowink/contentful-backup"
+    "start:docker": "docker run -t -i -p 80:80 --rm --name contentful-backup biowink/contentful-backup",
+    "deploy": "scripts/deployToDockerHub.sh"
   },
   "dependencies": {
     "aws-sdk": "^2.662.0",
