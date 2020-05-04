@@ -1,20 +1,26 @@
 {
   "name": "back-up-contentful",
-  "description": "An AWS Lambda function for backing up Contentful content and assets to S3.",
+  "description": "A Node.js app for backing up Contentful content and assets to S3.",
   "license": "UNLICENSED",
   "scripts": {
-    "deploy": "sls deploy"
+    "start": "node handler.js",
+    "build:docker": "docker build . -t biowink/contentful-backup -f docker/app.Dockerfile",
+    "start:docker": "docker run -t -i -p 80:80 --rm --name contentful-backup biowink/contentful-backup",
+    "deploy": "scripts/deployToDockerHub.sh"
   },
   "dependencies": {
-    "aws-sdk": "^2.267.1",
+    "aws-sdk": "^2.662.0",
     "chalk": "^2.4.1",
-    "contentful-export": "^7.1.1",
+    "contentful-export": "^7.9.2",
     "isomorphic-fetch": "^2.2.1",
     "make-dir": "^1.3.0",
+    "natives": "1.1.6",
     "s3": "^4.4.0"
   },
   "devDependencies": {
-    "serverless": "^1.40.0",
-    "serverless-dotenv-plugin": "^1.1.3"
+    "dotenv": "^8.2.0"
+  },
+  "resolutions": {
+    "graceful-fs": "4.1.15"
   }
 }
