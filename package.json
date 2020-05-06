@@ -6,7 +6,7 @@
     "start": "node handler.js",
     "build:docker": "docker build . -t biowink/contentful-backup -f docker/app.Dockerfile",
     "start:docker": "docker run -t -i -p 80:80 --rm --name contentful-backup biowink/contentful-backup",
-    "deploy": "scripts/deployToDockerHub.sh"
+    "deploy": "GIT_SHA=`git rev-parse HEAD` scripts/deployToDockerHub.sh"
   },
   "dependencies": {
     "aws-sdk": "^2.662.0",
