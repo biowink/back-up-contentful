@@ -1,10 +1,5 @@
 #!/bin/bash -xe
 
-get_timestamp() 
-{
-    date '+%Y-%m-%d.%H-%M-%S%Z'
-}
-
 build_docker_image ()
 {
     yarn build:docker
@@ -12,12 +7,12 @@ build_docker_image ()
 
 tag_docker_image ()
 {
-    docker tag biowink/helloclue.com "biowink/contentful-backup:$(get_timestamp)"
+    docker tag biowink/contentful-backup "biowink/contentful-backup:${GIT_SHA}"
 }
 
 push_to_dockerhub ()
 {
-    docker push "biowink/contentful-backup:$(get_timestamp)"
+    docker push "biowink/contentful-backup:${GIT_SHA}"
 }
 
 build_docker_image
