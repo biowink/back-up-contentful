@@ -7,14 +7,14 @@ build_docker_image ()
 
 tag_docker_image ()
 {
-    docker tag biowink/contentful-backup "biowink/contentful-backup:${GIT_SHA}"
+    docker tag 974664203983.dkr.ecr.eu-west-1.amazonaws.com/contentful-backup "974664203983.dkr.ecr.eu-west-1.amazonaws.com/contentful-backup:${GIT_SHA}"
 }
 
-push_to_dockerhub ()
+push_to_aws ()
 {
-    docker push "biowink/contentful-backup:${GIT_SHA}"
+    docker push "974664203983.dkr.ecr.eu-west-1.amazonaws.com/contentful-backup:${GIT_SHA}"
 }
 
 build_docker_image
 tag_docker_image
-push_to_dockerhub
+push_to_aws
