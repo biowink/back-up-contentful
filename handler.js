@@ -3,13 +3,12 @@
 require("dotenv").config();
 
 const AWS = require("aws-sdk");
-const contentfulExport = require("contentful-export");
-const mkdir = require("make-dir");
+const { exportContentfulSpace } = require("./contentful-export");
 const path = require("path");
 const s3 = require("s3");
 
 const postToSlack = require("./post-to-slack");
-const uploadToS3 = require("./contentful-backup/lib/upload-to-s3");
+const { uploadDirectoryToS3 } = require("./s3-upload");
 
 // Get Contentful Management Token from env
 const managementToken = process.env.CONTENTFUL_MANAGEMENT_TOKEN;
@@ -23,43 +22,24 @@ if (!spaceId) {
   throw new Error("Missing env variable CONTENTFUL_SPACE_IDS: string");
 }
 
-const createExportDir = async () => {
-  const exportDir = path.resolve(
-    (process.env.EXPORT_DIR || "/tmp/contentful-export") +
-      "/" +
-      new Date().toISOString()
-  );
-
-  try {
-    await mkdir(exportDir);
-    return exportDir;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
+// Export logic moved to contentful-export.js
 
 const runBackup = async () => {
-  console.log("Creating export directory...");
-  const exportDir = await createExportDir();
-  console.log(`Created export directory ${exportDir}.`);
-
-  console.log(`Exporting space ${spaceId}...`);
+  let exportDir;
   try {
-    await contentfulExport({
-      spaceId,
-      managementToken,
-      exportDir,
-      includeDrafts: true,
-      downloadAssets: true,
-      maxAllowedLimit: 10,
-    });
+    exportDir = await exportContentfulSpace();
   } catch (e) {
-    postToSlack(
-      "The Contentful backup failed while exporting from Contentful. " +
-        e.message
-    );
+    let slackMsg = `:x: *Contentful backup failed during export.*\n`;
+    slackMsg += `*Error:* ${e.name || 'Error'}: ${e.message || e}`;
+    if (e.stack) {
+      slackMsg += `\n*Stack Trace:*\n\`${e.stack}\``;
+    }
+    if (e.message && e.message.toLowerCase().includes('rate limit')) {
+      slackMsg += `\n:warning: *Rate limit detected.* Consider increasing retryDelay, reducing maxAllowedLimit, or running the export at a different time.`;
+    }
+    await postToSlack(slackMsg);
+    throw e;
   }
-  console.log(`Exported space ${spaceId}`);
 
   console.log("Initializing S3 client...");
   const s3Client = s3.createClient({
@@ -70,7 +50,14 @@ const runBackup = async () => {
   });
 
   console.log("Uploading files to S3...");
-  await uploadToS3(s3Client);
+  const bucketName = process.env.AWS_S3_BUCKET_NAME;
+  if (!bucketName) {
+    throw new Error("Missing env variable AWS_S3_BUCKET_NAME: string");
+  }
+
+  // Use the extracted S3 upload module
+  const prefix = `${new Date().toISOString()}/`;
+  await uploadDirectoryToS3(exportDir, s3Client.s3Client, bucketName, prefix);
   console.log("Finished uploading files to S3.");
 
   console.log("Posting notification to Slack webhook...");
